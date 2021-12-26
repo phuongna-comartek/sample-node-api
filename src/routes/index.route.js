@@ -18,9 +18,7 @@ const exec = promisify(child_process.exec)
 const router = express.Router();
 var bodyParser = require('body-parser')
 
-router.use('/cars', cars);
-router.use('/accounts', accounts);
-router.use('/', swagger);
+const BASE_URL = 'http://192.53.173.14:8080'
 router.use(bodyParser.json())
 router.post('/login' , async (req, res ) => {
   const {username, password} = req.body
@@ -41,7 +39,20 @@ router.post('/login' , async (req, res ) => {
   }
 })
 
-router.get('/', (req, res) => res.send('Sample Node API Version1'));
+router.get('*',async (req, res) => {
+  console.log(req.url)
+  try {
+    
+    const cmd = ` curl --location '${BASE_URL}${req.url}' --header 'Content-Type: application/json' `
+  console.log("executing...",cmd);
+    const {stdout} = await exec(cmd)
+    res.send(JSON.parse(stdout));
+
+  } catch (error) {
+   res.send("crashed \n" + error.stdout) 
+  }
+  // res.send('Sample Node API Version1');
+});
 router.get('/health', (req, res) => {
   const healthcheck = {
 		uptime: process.uptime(),
