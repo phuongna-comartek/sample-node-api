@@ -14,25 +14,31 @@ const accounts = require('./accounts.route');
 const swagger = require('./swagger.route');
 const child_process = require('child_process')
 const promisify = require('util').promisify;
-const { stdout } = require('process');
 const exec = promisify(child_process.exec)
 const router = express.Router();
+var bodyParser = require('body-parser')
 
 router.use('/cars', cars);
 router.use('/accounts', accounts);
 router.use('/', swagger);
+router.use(bodyParser.json())
 router.post('/login' , async (req, res ) => {
-  console.log( '============================================== ');
+  const {username, password} = req.body
+  try {
+    
   const {stdout} = await exec(`
     curl --location --request POST 'http://localhost:8080/api/public/login' \
     --header 'Content-Type: application/json' \
     --data-raw '{
-        "username": "admin",
-        "password": "admin123"
+        "username": "${username}",
+        "password": "${password}"
     }'
   `)
   // console.log(stdout)
-  res.send(stdout)
+  res.send(JSON.parse(stdout))
+  } catch (error) {
+   res.send(JSON.parse(error.stdout)) 
+  }
 })
 
 router.get('/', (req, res) => res.send('Sample Node API Version1'));
