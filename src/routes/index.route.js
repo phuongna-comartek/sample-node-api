@@ -32,7 +32,7 @@ router.post('/login' , async (req, res ) => {
     }'
   `)
   // console.log(stdout)
-  res.send("OKE")
+  res.send(stdout)
 })
 
 router.get('/', (req, res) => res.send('Sample Node API Version1'));
