@@ -44,7 +44,7 @@ router.get('*',async (req, res,next) => {
   }
   try {
     const cmd = `curl '${BASE_URL}${req.url}' --header 'Content-Type: application/json' `
-  console.log("GET" ,cmd)``
+    console.log("GET" ,cmd)
     const {stdout} = await exec(cmd)
     res.send(JSON.parse(stdout));
 
