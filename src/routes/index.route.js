@@ -9,42 +9,37 @@
 */
 
 const express = require('express');
-const cars = require('./cars.route');
-const accounts = require('./accounts.route');
-const swagger = require('./swagger.route');
 const child_process = require('child_process')
 const promisify = require('util').promisify;
 const exec = promisify(child_process.exec)
 const router = express.Router();
 var bodyParser = require('body-parser')
 
-const BASE_URL = 'http://192.53.173.14:8080'
+const BASE_URL = 'http://192.53.173.14:8080/api'
+// const BASE_URL = 'http://localhost:8080'
+
 router.use(bodyParser.json())
-router.post('/login' , async (req, res ) => {
-  const {username, password} = req.body
+router.post('*' , async (req, res ) => {
+  const data = JSON.stringify(req.body)
+  console.log("POST" ,req.url)
   try {
     
   const {stdout} = await exec(`
-    curl --location --request POST 'http://localhost:8080/api/public/login' \
+    curl --location --request POST '${BASE_URL}${req.url}' \
     --header 'Content-Type: application/json' \
-    --data-raw '{
-        "username": "${username}",
-        "password": "${password}"
-    }'
+    --data-raw '${data}'
   `)
   // console.log(stdout)
-  res.send(JSON.parse(stdout))
+    res.send(JSON.parse(stdout))
   } catch (error) {
-   res.send(JSON.parse(error.stdout)) 
+    res.send(JSON.parse(error.stdout)) 
   }
 })
 
 router.get('*',async (req, res) => {
-  console.log(req.url)
   try {
-    
-    const cmd = ` curl --location '${BASE_URL}${req.url}' --header 'Content-Type: application/json' `
-  console.log("executing...",cmd);
+    const cmd = `curl --location '${BASE_URL}${req.url}' --header 'Content-Type: application/json' `
+  console.log("GET" ,cmd)
     const {stdout} = await exec(cmd)
     res.send(JSON.parse(stdout));
 
@@ -52,14 +47,6 @@ router.get('*',async (req, res) => {
    res.send("crashed \n" + error.stdout) 
   }
   // res.send('Sample Node API Version1');
-});
-router.get('/health', (req, res) => {
-  const healthcheck = {
-		uptime: process.uptime(),
-		message: 'OK',
-		timestamp: Date.now()
-  };
-  res.send(JSON.stringify(healthcheck));
 });
 
 module.exports = router;

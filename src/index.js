@@ -21,8 +21,10 @@ const credentials = {key, cert};
 //setup app & its routes
 const app = express();
 app.use(cors());
+app.use(express.static('public'))
 const routes = require('./routes/index.route');
 app.use(routes);
+
 
 //start http server
 const httpServer = http.createServer(app);
