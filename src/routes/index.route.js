@@ -15,8 +15,8 @@ const exec = promisify(child_process.exec)
 const router = express.Router();
 var bodyParser = require('body-parser')
 
-const BASE_URL = 'http://192.53.173.14:8080'
-// const BASE_URL = 'http://localhost:8080'
+// const BASE_URL = 'http://192.53.173.14:8080'
+const BASE_URL = 'http://localhost:8080'
 
 router.use(bodyParser.json())
 router.post('*' , async (req, res ) => {
@@ -43,7 +43,7 @@ router.get('*',async (req, res,next) => {
     return
   }
   try {
-    const cmd = `curl --location '${BASE_URL}${req.url}' --header 'Content-Type: application/json' `
+    const cmd = `curl '${BASE_URL}${req.url}' --header 'Content-Type: application/json' `
   console.log("GET" ,cmd)``
     const {stdout} = await exec(cmd)
     res.send(JSON.parse(stdout));
