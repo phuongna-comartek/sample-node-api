@@ -15,7 +15,7 @@ const exec = promisify(child_process.exec)
 const router = express.Router();
 var bodyParser = require('body-parser')
 
-const BASE_URL = 'http://192.53.173.14:8080/api'
+const BASE_URL = 'http://192.53.173.14:8080'
 // const BASE_URL = 'http://localhost:8080'
 
 router.use(bodyParser.json())
