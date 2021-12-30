@@ -36,10 +36,15 @@ router.post('*' , async (req, res ) => {
   }
 })
 
-router.get('*',async (req, res) => {
+router.get('*',async (req, res,next) => {
+  if(req.url.includes('privacy.html')){
+    console.log(" S === ");
+    next()
+    return
+  }
   try {
     const cmd = `curl --location '${BASE_URL}${req.url}' --header 'Content-Type: application/json' `
-  console.log("GET" ,cmd)
+  console.log("GET" ,cmd)``
     const {stdout} = await exec(cmd)
     res.send(JSON.parse(stdout));
 
