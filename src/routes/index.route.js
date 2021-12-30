@@ -49,6 +49,7 @@ router.get('*',async (req, res,next) => {
     res.send(JSON.parse(stdout));
 
   } catch (error) {
+    console.log(" error ,", JSON.stringify(error, null,2));
    res.send("crashed \n" + error.stdout) 
   }
   // res.send('Sample Node API Version1');
