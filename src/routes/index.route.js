@@ -14,6 +14,8 @@ const promisify = require('util').promisify;
 const exec = promisify(child_process.exec)
 const router = express.Router();
 var bodyParser = require('body-parser')
+const fs = require('fs')
+const stream = require('stream')
 
 // const BASE_URL = 'http://192.53.173.14:8080'
 const BASE_URL = 'http://localhost:8080'
@@ -35,10 +37,25 @@ router.post('*' , async (req, res ) => {
     res.send(JSON.parse(error.stdout)) 
   }
 })
+router.get("/files/*", (req, res) =>{
+  const path = '/opt' + req.url
+  // const path = '/Users/phuong/Desktop/Screen Shot 2022-01-10 at 19.25.14.png'
+  const r = fs.createReadStream(path)
+  const ps = new stream.PassThrough() 
+  stream.pipeline(
+    r,
+    ps, // <---- this makes a trick with stream error handling
+    (err) => {
+     if (err) {
+       console.log(err) // No such file or any other kind of error
+       return res.sendStatus(400); 
+     }
+   })
+   ps.pipe(res) 
+})
 
 router.get('*',async (req, res,next) => {
-  if(req.url.includes('privacy.html')){
-    console.log(" S === ");
+  if(req.url.includes('files')){
     next()
     return
   }
